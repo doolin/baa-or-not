@@ -22,19 +22,52 @@ jobs:
           bundler-cache: true
 
       - name: Run RSpec
-        run: bundle exec rspec
+        run: |
+          set -o pipefail
+          COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+          { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > rspec-results.txt
+          bundle exec rspec 2>&1 | tee -a rspec-results.txt
 
       - name: Run RuboCop
-        run: bundle exec rubocop
+        run: |
+          set -o pipefail
+          COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+          { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > rubocop-results.txt
+          bundle exec rubocop 2>&1 | tee -a rubocop-results.txt
 
       - name: Run Brakeman
-        run: bundle exec brakeman --force --no-pager --quiet
+        run: |
+          set -o pipefail
+          COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+          { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > brakeman-results.txt
+          bundle exec brakeman --force --no-pager --quiet 2>&1 | tee -a brakeman-results.txt
 
       - name: Run bundle-audit
-        run: bundle exec bundle-audit check --update
+        run: |
+          set -o pipefail
+          COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+          { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > bundle-audit-results.txt
+          bundle exec bundle-audit check --update 2>&1 | tee -a bundle-audit-results.txt
 
       - name: Run libyear-bundler
-        run: bundle exec libyear-bundler
+        run: |
+          set -o pipefail
+          COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+          { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > libyear-results.txt
+          bundle exec libyear-bundler 2>&1 | tee -a libyear-results.txt
+
+      - name: Upload CI artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-results
+          retention-days: 90
+          path: |
+            rspec-results.txt
+            rubocop-results.txt
+            brakeman-results.txt
+            bundle-audit-results.txt
+            libyear-results.txt
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -45,15 +78,22 @@ jobs:
         continue-on-error: true
 
       - name: Load Solana keypair
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.SOLANA_KEYPAIR != ''
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          SOLANA_KEYPAIR: ${{ secrets.SOLANA_KEYPAIR }}
         run: |
-          echo "${{ secrets.SOLANA_KEYPAIR }}" > /tmp/solana-keypair.json
-          echo "SOLANA_KEYPAIR_PATH=/tmp/solana-keypair.json" >> "$GITHUB_ENV"
+          if [ -n "$SOLANA_KEYPAIR" ]; then
+            printf '%s' "$SOLANA_KEYPAIR" > /tmp/solana-keypair.json
+            chmod 600 /tmp/solana-keypair.json
+            echo "SOLANA_KEYPAIR_PATH=/tmp/solana-keypair.json" >> "$GITHUB_ENV"
+          fi
         continue-on-error: true
 
       - name: Attest build on Solana
         if: github.ref == 'refs/heads/main' && github.event_name == 'push' && env.SOLANA_KEYPAIR_PATH != ''
-        run: ./scripts/attest.sh
+        env:
+          S3_COMPLIANCE_BUCKET: ${{ vars.S3_COMPLIANCE_BUCKET }}
+        run: bundle exec ruby scripts/attest.rb
         continue-on-error: true
 
       - name: Cleanup Solana keypair

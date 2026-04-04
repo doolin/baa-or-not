@@ -7,6 +7,7 @@ gemspec
 group :development, :test do
   gem "brakeman", require: false
   gem "bundler-audit", require: false
+  gem "ed25519", require: false
   gem "libyear-bundler", require: false
   gem "rack-test"
   gem "rspec"

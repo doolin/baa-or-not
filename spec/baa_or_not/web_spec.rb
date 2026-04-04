@@ -24,7 +24,7 @@ RSpec.describe BaaOrNot::Web do
   describe "definitions section" do
     it "includes all four key definitions" do
       get "/"
-      %w[Covered\ Entity Business\ Associate PHI PII].each do |term|
+      ["Covered Entity", "Business Associate", "PHI", "PII"].each do |term|
         expect(last_response.body).to include(term)
       end
     end
