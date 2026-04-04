@@ -1,0 +1,115 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+
+Layout/LineLength:
+  Max: 100
+
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Layout/TrailingEmptyLines:
+  EnforcedStyle: final_newline
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: space
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+Metrics/MethodLength:
+  Max: 8
+
+Metrics/ClassLength:
+  Max: 50
+
+Metrics/ModuleLength:
+  Max: 50
+
+Metrics/AbcSize:
+  Max: 12
+
+Metrics/CyclomaticComplexity:
+  Max: 5
+
+Metrics/PerceivedComplexity:
+  Max: 5
+
+Metrics/BlockLength:
+  Max: 15
+  Exclude:
+    - "spec/**/*"
+    - "*.gemspec"
+
+Metrics/ParameterLists:
+  Max: 3
+  CountKeywordArgs: true
+
+Metrics/BlockNesting:
+  Max: 2
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
+
+Style/Documentation:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+    - "lib/baa_or_not/version.rb"
+
+Style/AndOr:
+  EnforcedStyle: always
+
+Style/SymbolProc:
+  Enabled: true
+
+Style/GuardClause:
+  Enabled: true
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/NestedGroups:
+  Max: 3
+
+RSpec/MultipleExpectations:
+  Max: 1
+
+RSpec/NamedSubject:
+  Enabled: true
+
+RSpec/LetSetup:
+  Enabled: true
+
+RSpec/DescribedClass:
+  Enabled: true
+
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without

@@ -1,0 +1,40 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.gem
+Gemfile.lock
+
+# SAM build artifacts
+.aws-sam/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Terraform (from form-terra, not this repo)
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+
+# Build artifacts
+REVISION
+deploy.zip
+/ci-artifacts/
+ci-artifacts.zip
+attestation.pdf

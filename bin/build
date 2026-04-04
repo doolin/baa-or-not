@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+git rev-parse --short HEAD > REVISION
+echo "==> REVISION set to $(cat REVISION)"

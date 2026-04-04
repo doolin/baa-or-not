@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Run RSpec
+        run: bundle exec rspec
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+      - name: Run Brakeman
+        run: bundle exec brakeman --force --no-pager --quiet
+
+      - name: Run bundle-audit
+        run: bundle exec bundle-audit check --update
+
+      - name: Run libyear-bundler
+        run: bundle exec libyear-bundler
+
+      - name: Configure AWS credentials
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-west-1
+        continue-on-error: true
+
+      - name: Load Solana keypair
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.SOLANA_KEYPAIR != ''
+        run: |
+          echo "${{ secrets.SOLANA_KEYPAIR }}" > /tmp/solana-keypair.json
+          echo "SOLANA_KEYPAIR_PATH=/tmp/solana-keypair.json" >> "$GITHUB_ENV"
+        continue-on-error: true
+
+      - name: Attest build on Solana
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && env.SOLANA_KEYPAIR_PATH != ''
+        run: ./scripts/attest.sh
+        continue-on-error: true
+
+      - name: Cleanup Solana keypair
+        if: always()
+        run: rm -f /tmp/solana-keypair.json
+
+  deploy:
+    name: Deploy
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-west-1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Build and deploy
+        run: ./bin/deploy

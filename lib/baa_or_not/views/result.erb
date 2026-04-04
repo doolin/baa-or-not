@@ -1,0 +1,20 @@
+<div class="result <%= @decision.required? ? 'required' : 'not-required' %>">
+  <h2><%= @decision.determination %></h2>
+  <% if @decision.required? %>
+    <p>
+      Based on your answers, all three conditions are met: you are a
+      Covered Entity or Business Associate, your application handles PHI,
+      and third-party vendors process that PHI. A BAA is typically required
+      with those vendors.
+    </p>
+  <% else %>
+    <p>
+      Based on your answers, not all three conditions are met. A BAA may
+      not be required, but you should document your rationale and consult
+      qualified counsel.
+    </p>
+  <% end %>
+</div>
+<p style="margin-top: 1rem;">
+  <a href="/baa-or-not">Start over</a>
+</p>

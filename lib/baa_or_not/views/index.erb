@@ -1,0 +1,18 @@
+<form method="post" action="/baa-or-not/decide">
+  <% BaaOrNot::Decision::QUESTIONS.each do |q| %>
+    <div class="question">
+      <label><%= q[:text] %></label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="<%= q[:key] %>" value="yes" required>
+          Yes
+        </label>
+        <label>
+          <input type="radio" name="<%= q[:key] %>" value="no" required>
+          No
+        </label>
+      </div>
+    </div>
+  <% end %>
+  <button type="submit">Evaluate</button>
+</form>

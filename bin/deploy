@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LAMBDA_FUNCTION="baa-or-not"
+S3_BUCKET="baa-or-not-deployments"
+S3_KEY="baa-or-not-deploy.zip"
+AWS_REGION="us-west-1"
+DEPLOY_ZIP="/tmp/baa-or-not-deploy.zip"
+
+echo "==> Writing REVISION..."
+git rev-parse --short HEAD > REVISION
+
+echo "==> Packaging..."
+zip -qr "$DEPLOY_ZIP" \
+  app.rb config.rb config.ru Gemfile Gemfile.lock \
+  lib/ REVISION \
+  -x '*.DS_Store' 'lib/baa_or_not/views/.keep'
+
+echo "==> Uploading to S3..."
+aws s3 cp "$DEPLOY_ZIP" "s3://$S3_BUCKET/$S3_KEY" --region "$AWS_REGION"
+
+echo "==> Updating Lambda..."
+aws lambda update-function-code \
+  --function-name "$LAMBDA_FUNCTION" \
+  --s3-bucket "$S3_BUCKET" \
+  --s3-key "$S3_KEY" \
+  --region "$AWS_REGION" \
+  --query 'FunctionName' --output text
+
+echo "==> Waiting for update..."
+aws lambda wait function-updated \
+  --function-name "$LAMBDA_FUNCTION" \
+  --region "$AWS_REGION"
+
+echo "==> Done."
+rm -f REVISION "$DEPLOY_ZIP"
