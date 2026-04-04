@@ -58,6 +58,7 @@ jobs:
           set -o pipefail
           COMMIT_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
           { echo "# commit: ${COMMIT_SHA}"; echo "---"; } > libyear-results.txt
+          bundle config unset deployment
           bundle exec libyear-bundler 2>&1 | tee -a libyear-results.txt
 
       - name: Upload CI artifacts
