@@ -62,6 +62,32 @@
       text-align: center;
     }
     a { color: #2563eb; }
+    .definitions { margin-bottom: 1.5rem; }
+    .definitions h2 { font-size: 1.125rem; margin-bottom: 0.75rem; }
+    details {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    details summary {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+    details summary:hover { background: #f1f5f9; border-radius: 0.5rem; }
+    details[open] summary { border-bottom: 1px solid #e2e8f0; }
+    details .detail-body {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+    details .detail-body p { margin-bottom: 0.5rem; }
+    details .detail-body .source {
+      font-size: 0.8125rem;
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
@@ -71,6 +97,102 @@
     <strong>For entertainment and educational purposes only.</strong>
     This tool does not provide legal advice. Consult qualified counsel
     for binding determinations.
+  </div>
+  <div class="definitions">
+    <h2>Key definitions</h2>
+
+    <details>
+      <summary>Covered Entity &mdash; a health plan, clearinghouse, or provider subject to HIPAA</summary>
+      <div class="detail-body">
+        <p>
+          A covered entity is a health plan, health care clearinghouse, or health
+          care provider that transmits any health information electronically in
+          connection with a HIPAA-covered transaction. The three categories are:
+          health plans (including health insurers, HMOs, and government programs
+          such as Medicare and Medicaid), health care clearinghouses (entities that
+          process nonstandard health information into standard formats), and health
+          care providers who conduct certain electronic transactions such as claims
+          or benefit eligibility inquiries. An entity that does not fall into one
+          of these categories is not a covered entity and is not directly subject
+          to HIPAA.
+        </p>
+        <p class="source">
+          Source:
+          <a href="https://www.hhs.gov/hipaa/for-professionals/covered-entities/index.html"
+             rel="noopener">HHS &mdash; Covered Entities</a>
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Business Associate &mdash; a person or organization handling PHI on behalf of a covered entity</summary>
+      <div class="detail-body">
+        <p>
+          A business associate is a person or organization that performs functions
+          or activities involving the use or disclosure of protected health
+          information on behalf of, or provides services to, a covered entity.
+          Examples include claims processing, data analysis, billing, legal,
+          actuarial, accounting, and consulting services where access to PHI is
+          necessary. The HITECH Act and the 2013 Omnibus Rule made business
+          associates directly liable for compliance with certain HIPAA Privacy
+          and Security Rule provisions. A covered entity must obtain satisfactory
+          assurances through a written Business Associate Agreement that the
+          business associate will appropriately safeguard PHI.
+        </p>
+        <p class="source">
+          Source:
+          <a href="https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html"
+             rel="noopener">HHS &mdash; Business Associates</a>
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Protected Health Information (PHI) &mdash; individually identifiable health information held by a covered entity</summary>
+      <div class="detail-body">
+        <p>
+          PHI is individually identifiable health information transmitted or
+          maintained in any form or medium by a covered entity or its business
+          associate. It includes health information (including demographic data)
+          that relates to the past, present, or future physical or mental health
+          condition of an individual, the provision of health care, or payment for
+          health care, and that identifies the individual or could reasonably be
+          used to identify the individual. PHI encompasses information in any
+          form&mdash;electronic, paper, or oral. The definition specifically
+          excludes education records covered by FERPA and employment records held
+          by a covered entity in its role as employer.
+        </p>
+        <p class="source">
+          Source:
+          <a href="https://www.law.cornell.edu/cfr/text/45/section-160.103"
+             rel="noopener">45 CFR &sect; 160.103</a>
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Personally Identifiable Information (PII) &mdash; any data that can distinguish or trace an individual's identity</summary>
+      <div class="detail-body">
+        <p>
+          PII is any information maintained by an agency that can be used to
+          distinguish or trace an individual's identity, either alone or when
+          combined with other information linked or linkable to a specific
+          individual. Examples include name, Social Security number, biometric
+          records, date and place of birth, and similar data. NIST distinguishes
+          between &ldquo;linked&rdquo; information (directly tied to an
+          individual, such as an SSN) and &ldquo;linkable&rdquo; information
+          (which could be combined with other data to identify someone, such as
+          date of birth plus zip code). PII is a broader concept than PHI and
+          is not specific to HIPAA, but overlap is significant: most PHI is
+          also PII.
+        </p>
+        <p class="source">
+          Source:
+          <a href="https://csrc.nist.gov/pubs/sp/800/122/final"
+             rel="noopener">NIST SP 800-122</a>
+        </p>
+      </div>
+    </details>
   </div>
   <%= yield %>
   <footer>

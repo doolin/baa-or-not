@@ -21,6 +21,15 @@ RSpec.describe BaaOrNot::Web do
     end
   end
 
+  describe "definitions section" do
+    it "includes all four key definitions" do
+      get "/"
+      %w[Covered\ Entity Business\ Associate PHI PII].each do |term|
+        expect(last_response.body).to include(term)
+      end
+    end
+  end
+
   describe "GET /baa-or-not" do
     it "returns the index page" do
       get "/baa-or-not"
