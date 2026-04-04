@@ -15,6 +15,7 @@ require "json"
 require "net/http"
 require "base64"
 require "uri"
+require "time"
 require "ed25519"
 
 # Base58 alphabet used by Solana for blockhash encoding.
