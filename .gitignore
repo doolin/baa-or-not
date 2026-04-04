@@ -7,7 +7,7 @@
 /spec/reports/
 /tmp/
 *.gem
-Gemfile.lock
+# Gemfile.lock is committed — needed for Lambda deployment
 
 # SAM build artifacts
 .aws-sam/

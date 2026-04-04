@@ -5,16 +5,27 @@ LAMBDA_FUNCTION="baa-or-not"
 S3_BUCKET="baa-or-not-deployments"
 S3_KEY="baa-or-not-deploy.zip"
 AWS_REGION="us-west-1"
+CF_DISTRIBUTION="ERIW60YQ29CKU"
+BUILD_DIR="/tmp/baa-or-not-build"
 DEPLOY_ZIP="/tmp/baa-or-not-deploy.zip"
 
 echo "==> Writing REVISION..."
 git rev-parse --short HEAD > REVISION
 
+echo "==> Preparing build directory..."
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
+cp -r app.rb config.rb config.ru Gemfile Gemfile.lock \
+  baa_or_not.gemspec lib/ REVISION "$BUILD_DIR/"
+
+echo "==> Bundling gems for production..."
+(cd "$BUILD_DIR" && \
+  bundle config set --local path vendor/bundle && \
+  bundle config set --local without "development test" && \
+  bundle install --quiet)
+
 echo "==> Packaging..."
-zip -qr "$DEPLOY_ZIP" \
-  app.rb config.rb config.ru Gemfile Gemfile.lock \
-  lib/ REVISION \
-  -x '*.DS_Store' 'lib/baa_or_not/views/.keep'
+(cd "$BUILD_DIR" && zip -qr "$DEPLOY_ZIP" . -x '*.DS_Store')
 
 echo "==> Uploading to S3..."
 aws s3 cp "$DEPLOY_ZIP" "s3://$S3_BUCKET/$S3_KEY" --region "$AWS_REGION"
@@ -32,5 +43,11 @@ aws lambda wait function-updated \
   --function-name "$LAMBDA_FUNCTION" \
   --region "$AWS_REGION"
 
+echo "==> Invalidating CloudFront cache..."
+aws cloudfront create-invalidation \
+  --distribution-id "$CF_DISTRIBUTION" \
+  --paths '/baa-or-not*' \
+  --query 'Invalidation.Id' --output text
+
 echo "==> Done."
-rm -f REVISION "$DEPLOY_ZIP"
+rm -rf "$BUILD_DIR" "$DEPLOY_ZIP" REVISION
