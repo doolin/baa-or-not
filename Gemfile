@@ -4,6 +4,10 @@ source "https://rubygems.org"
 
 gemspec
 
+group :development do
+  gem "rackup"
+end
+
 group :development, :test do
   gem "brakeman", require: false
   gem "bundler-audit", require: false
