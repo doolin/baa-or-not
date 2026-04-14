@@ -10,5 +10,8 @@ module BaaOrNot
                File.read(File.expand_path("../REVISION", __dir__)).strip
              elsif system("git rev-parse --short HEAD >/dev/null 2>&1")
                `git rev-parse --short HEAD`.strip
+             else
+               warn "baa_or_not: REVISION file missing and git unavailable"
+               "unknown"
              end
 end
