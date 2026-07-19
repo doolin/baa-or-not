@@ -38,3 +38,6 @@ deploy.zip
 /ci-artifacts/
 ci-artifacts.zip
 attestation.pdf
+
+# Local Claude Code settings — per-machine, not shared.
+.claude/settings.local.json
