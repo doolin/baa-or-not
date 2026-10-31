@@ -39,5 +39,8 @@ deploy.zip
 ci-artifacts.zip
 attestation.pdf
 
-# Local Claude Code settings — per-machine, not shared.
-.claude/settings.local.json
+# Claude Code — ignore per-machine state by default; allowlist only
+# files meant to be shared. .claude/skills/ holds absolute symlinks
+# into ~/src/dave-skills, which dangle on any other clone.
+/.claude/*
+!/.claude/settings.json
